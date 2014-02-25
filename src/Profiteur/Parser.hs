@@ -50,7 +50,7 @@ parseContCentreNode indent = do
     inheritedTime <- AP8.double
     skipHorizontalSpace
     inheritedAlloc <- AP8.double
-    AP8.endOfLine
+    skipToEol
 
     children <- AP.many' $ parseContCentreNode (indent + 1)
 
@@ -79,3 +79,10 @@ identifier = T.decodeUtf8 <$> AP8.takeWhile (not . AP8.isSpace)
 --------------------------------------------------------------------------------
 skipHorizontalSpace :: AP.Parser ()
 skipHorizontalSpace = AP.skipWhile AP8.isHorizontalSpace
+
+
+--------------------------------------------------------------------------------
+skipToEol :: AP.Parser ()
+skipToEol = do
+    AP.skipWhile (not . AP8.isEndOfLine)
+    AP8.endOfLine
