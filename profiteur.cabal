@@ -1,0 +1,51 @@
+Name:                profiteur
+Version:             0.1.0.0
+Synopsis:            Treemap visualiser for GHC prof files
+Description:         Treemap visualiser for GHC prof files
+Homepage:            http://github.com/jaspervdj/profiteur
+License:             BSD3
+License-file:        LICENSE
+Author:              Jasper Van der Jeugt <m@jaspervdj.be>
+Maintainer:          Jasper Van der Jeugt <m@jaspervdj.be>
+Copyright:           2014 Jasper Van der Jeugt
+Category:            Development
+Build-type:          Simple
+Cabal-version:       >= 1.8
+
+Extra-source-files:
+  CHANGELOG
+
+Data-files:
+  data/css/main.css
+  data/html/body.html
+  data/js/cost-centre-node.js
+  data/js/details.js
+  data/js/main.js
+  data/js/model.js
+  data/js/resizing-canvas.js
+  data/js/selection.js
+  data/js/sorting.js
+  data/js/tree-browser.js
+  data/js/tree-map.js
+  data/js/unicode.js
+  data/js/zoom.js
+  data/lib/jquery-1.11.0.min.js
+
+Executable profiteur
+  Main-is:        Main.hs
+  Hs-source-dirs: src
+  Ghc-options:    -Wall
+
+  Other-modules:
+    Profiteur.Core
+    Profiteur.Parser
+
+  Build-depends:
+    base                 >= 4    && < 5,
+    aeson                >= 0.6  && < 0.8,
+    attoparsec           >= 0.11 && < 0.12,
+    bytestring           >= 0.9  && < 0.11,
+    text                 >= 0.11  && < 1.1,
+    filepath             >= 1.3  && < 1.4,
+    unordered-containers >= 0.2  && < 0.3,
+    vector               >= 0.10 && < 0.11

@@ -1,0 +1,93 @@
+/* General
+ ******************************************************************************/
+
+html {
+    font-family:      sans-serif;
+    font-size:        14px;
+    background-color: #222;
+    color:            #ddd;
+}
+
+body {
+    display: table;
+    margin:  0px;
+    height: 100%;
+    width:  100%;
+}
+
+#details-tree {
+    position: absolute;
+    left:     0px;
+    height:   100%;
+    width:    33%;
+}
+
+#details {
+    border-bottom: solid 4px #888;
+    height:        33%;
+    overflow:      auto;
+    top:           0px;
+}
+
+#tree {
+    bottom:   0px;
+    height:   66%;
+    overflow: auto;
+    position: absolute;
+    width:    100%;
+}
+
+#map {
+    border-left: solid 4px #888;
+    position: absolute;
+    left:     33%;
+    right:    0px;
+    height:   100%;
+}
+
+/* Details
+ ******************************************************************************/
+
+#details h1 {
+    font-size:   16px;
+    font-weight: bold;
+    margin:      5px;
+}
+
+#details table {
+    margin: 5px;
+}
+
+#details td {
+    padding-right: 15px;
+}
+
+/* Tree browser
+ ******************************************************************************/
+
+.tree-browser .node {
+    padding: 2px;
+}
+
+.tree-browser .chevron {
+    position:   absolute;
+    width:      20px;
+    text-align: center;
+}
+
+.tree-browser .name {
+    position: relative;
+    left:     20px;
+    padding:  2px 5px 2px 5px;
+}
+
+.tree-browser .selected {
+    border: 2px solid #fff;
+}
+
+.tree-browser .children {
+    margin-top:   6px;
+    margin-left:  10px;
+    padding-left: 10px;
+    border-left:  1px dashed #888;
+}
