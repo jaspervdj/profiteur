@@ -1,3 +1,6 @@
+- 0.1.2.0
+    * Fix resize/redraw bug for Firefox/Linux combo
+
 - 0.1.1.0
     * Ignore extra information in `.prof` file
 
