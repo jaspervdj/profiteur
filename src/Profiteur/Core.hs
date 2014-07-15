@@ -61,8 +61,11 @@ mkCostCentreMap = go HMS.empty
         forIndiv (HMS.insert (T.pack $ show $ ccnId indiv) indiv) $
         HMS.insert (T.pack $ show $ ccnId ccn) ccn{ccnChildren=forIndiv (V.cons indiv) $ ccnChildren ccn} $
         V.foldl' go ccm $ ccnChildren ccn
-      where forIndiv f | cciIndividualTime i < 1e-6 && cciIndividualAlloc i < 1e-6 = id
-                       | otherwise = f
+      where forIndiv f |    cciIndividualTime i > 1e-6
+                         && cciIndividualAlloc i > 1e-6
+                         && not (V.null (ccnChildren ccn)) = f
+
+                       | otherwise = id
             indiv = CostCentreNode
               { ccnName     = new_name
               , ccnId       = 1000000 + ccnId ccn
