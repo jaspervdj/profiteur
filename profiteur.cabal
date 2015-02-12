@@ -31,6 +31,10 @@ Data-files:
   data/js/zoom.js
   data/lib/jquery-1.11.0.min.js
 
+Source-repository head
+  Type: git
+  Location: git://github.com/jaspervdj/profiteur.git
+
 Executable profiteur
   Main-is:        Main.hs
   Hs-source-dirs: src
