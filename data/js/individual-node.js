@@ -1,51 +1,18 @@
-IndividualNode.prototype = new Model();
+IndividualNode.prototype = new Node();
 IndividualNode.prototype.constructor = IndividualNode;
 
 function IndividualNode(prof, selection, sorting, parent, id) {
-    Model.call(this);
+    Node.call(this, prof, selection, sorting, parent, id);
 
-    this.prof      = prof;
-    this.sorting   = sorting;
-    this.parent    = parent;
-    this.id        = id + '.individual';
-    this.data      = prof.nodes[id];
-    this.expanded  = false;
-    this.children  = [];
-    this.selection = selection;
-
-    sorting.addChangeListener(this);
+    this.id = id + '.individual';
 }
 
 IndividualNode.prototype.isExpandable = function() {
     return false;
 };
 
-IndividualNode.prototype.toggleExpanded = function() {
-    return;
-};
-
-IndividualNode.prototype.computeChildren = function() {
-    return;
-};
-
-IndividualNode.prototype.setExpanded = function(expanded) {
-    return;
-};
-
 IndividualNode.prototype.getCanonicalName = function() {
-    return this.data.name.canonical + ' (indiv)';
-};
-
-IndividualNode.prototype.getFullName = function() {
-    return this.data.name.module + '.' + this.getCanonicalName();
-};
-
-IndividualNode.prototype.getColor = function() {
-    return '#222222';
-};
-
-IndividualNode.prototype.getCost = function() {
-    return this.sorting.getCost(this);
+    return '(indiv)';
 };
 
 IndividualNode.prototype.getTime = function() {
@@ -54,16 +21,4 @@ IndividualNode.prototype.getTime = function() {
 
 IndividualNode.prototype.getAlloc = function() {
     return this.data.info.individualAlloc;
-};
-
-IndividualNode.prototype.isSelected = function() {
-    return this == this.selection.getSelectedNode();
-};
-
-IndividualNode.prototype.select = function() {
-    this.selection.setSelectedNode(this);
-};
-
-IndividualNode.prototype.onChange = function(sorting) {
-    this.triggerChange();
 };

@@ -23,6 +23,7 @@ Data-files:
   data/js/individual-node.js
   data/js/main.js
   data/js/model.js
+  data/js/node.js
   data/js/resizing-canvas.js
   data/js/selection.js
   data/js/sorting.js
