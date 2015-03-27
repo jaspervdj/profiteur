@@ -5,13 +5,13 @@ Sorting.methods = {
     'by-time': {
         name:    'View by time',
         getCost: function(node) {
-            return node.data.info.inheritedTime;
+            return node.getTime();
         }
     },
     'by-alloc': {
         name:    'View by alloc',
         getCost: function(node) {
-            return node.data.info.inheritedAlloc;
+            return node.getAlloc();
         }
     }
 };

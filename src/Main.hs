@@ -56,6 +56,7 @@ writeReport profFile prof = IO.withBinaryFile htmlFile IO.WriteMode $ \h -> do
     includeJs h "data/js/unicode.js"
     includeJs h "data/js/model.js"
     includeJs h "data/js/resizing-canvas.js"
+    includeJs h "data/js/individual-node.js"
     includeJs h "data/js/cost-centre-node.js"
     includeJs h "data/js/selection.js"
     includeJs h "data/js/zoom.js"

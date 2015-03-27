@@ -20,6 +20,7 @@ Data-files:
   data/html/body.html
   data/js/cost-centre-node.js
   data/js/details.js
+  data/js/individual-node.js
   data/js/main.js
   data/js/model.js
   data/js/resizing-canvas.js
@@ -50,6 +51,6 @@ Executable profiteur
     attoparsec           >= 0.10 && < 0.13,
     bytestring           >= 0.9  && < 0.11,
     text                 >= 0.11 && < 1.3,
-    filepath             >= 1.3  && < 1.4,
+    filepath             >= 1.3  && < 1.5,
     unordered-containers >= 0.2  && < 0.3,
     vector               >= 0.10 && < 0.11

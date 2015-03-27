@@ -17,7 +17,7 @@ function CostCentreNode(prof, selection, sorting, parent, id) {
 }
 
 CostCentreNode.prototype.isExpandable = function() {
-    return this.data.children.length > 0;
+    return true;
 };
 
 CostCentreNode.prototype.toggleExpanded = function() {
@@ -28,6 +28,10 @@ CostCentreNode.prototype.computeChildren = function() {
     var _this = this;
 
     if (_this.expanded && _this.children.length <= 0) {
+        _this.children.push(new IndividualNode(
+                _this.prof, _this.selection, _this.sorting,
+                _this.parent, _this.id));
+
         for (var i = 0; i < _this.data.children.length; i++) {
             _this.children.push(new CostCentreNode(
                     _this.prof, _this.selection, _this.sorting,
@@ -53,19 +57,12 @@ CostCentreNode.prototype.setExpanded = function(expanded) {
     _this.triggerChange();
 };
 
-CostCentreNode.prototype.forChildren = function(f) {
-    for (var i = 0; i < this.children.length; i++) {
-        this.children[i].forChildren(f);
-        f(this.children[i]);
-    }
-};
-
 CostCentreNode.prototype.getCanonicalName = function() {
     return this.data.name.canonical;
 };
 
 CostCentreNode.prototype.getFullName = function() {
-    return this.data.name.module + '.' + this.data.name.canonical;
+    return this.data.name.module + '.' + this.getCanonicalName();
 };
 
 CostCentreNode.prototype.getColor = function() {
@@ -102,6 +99,14 @@ CostCentreNode.prototype.getColor = function() {
 
 CostCentreNode.prototype.getCost = function() {
     return this.sorting.getCost(this);
+};
+
+CostCentreNode.prototype.getTime = function() {
+    return this.data.info.inheritedTime;
+};
+
+CostCentreNode.prototype.getAlloc = function() {
+    return this.data.info.inheritedAlloc;
 };
 
 CostCentreNode.prototype.isSelected = function() {

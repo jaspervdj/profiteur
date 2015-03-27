@@ -28,7 +28,7 @@ import qualified Data.Vector         as V
 --------------------------------------------------------------------------------
 data Prof = Prof
     { pNodes :: !CostCentreMap
-    , pRoot  :: !Int
+    , pRoot  :: !T.Text
     } deriving (Show)
 
 
@@ -58,14 +58,14 @@ mkCostCentreMap = go HMS.empty
   where
     go :: CostCentreMap -> CostCentreNode -> CostCentreMap
     go ccm !ccn =
-        HMS.insert (T.pack $ show $ ccnId ccn) ccn $
+        HMS.insert (ccnId ccn) ccn $
         V.foldl' go ccm (ccnChildren ccn)
 
 
 --------------------------------------------------------------------------------
 data CostCentreNode = CostCentreNode
     { ccnName     :: !Name
-    , ccnId       :: !Int
+    , ccnId       :: !T.Text
     , ccnInfo     :: !CostCentreInfo
     , ccnChildren :: !(Vector CostCentreNode)
     } deriving (Show)

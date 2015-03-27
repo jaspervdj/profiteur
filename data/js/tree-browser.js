@@ -88,7 +88,8 @@ TreeBrowser.prototype.onChange = function(source) {
         _this.container.append(_this.elements[node.id]);
         _this.renderNode(_this.elements[node.id], node);
         node.addChangeListener(_this);
-    } else if (source instanceof CostCentreNode) {
+    } else if ((source instanceof CostCentreNode) ||
+            (source instanceof IndividualNode)) {
         var element = _this.elements[source.id];
 
         if (!element) return;  // Invisible source changed what?

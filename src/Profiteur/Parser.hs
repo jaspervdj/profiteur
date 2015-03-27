@@ -8,9 +8,10 @@ module Profiteur.Parser
 --------------------------------------------------------------------------------
 import           Control.Applicative              ((<$>))
 import           Control.Monad                    (replicateM_)
-import           Data.Attoparsec                  as AP
+import           Data.Attoparsec.ByteString       as AP
 import           Data.Attoparsec.ByteString.Char8 as AP8
 import           Data.Text                        (Text)
+import qualified Data.Text                        as T
 import qualified Data.Text.Encoding               as T
 import qualified Data.Vector                      as V
 
@@ -38,7 +39,7 @@ parseContCentreNode indent = do
     skipHorizontalSpace
     module' <- identifier
     skipHorizontalSpace
-    id' <- AP8.decimal
+    id' <- T.pack . show <$> (AP8.decimal :: AP.Parser Int)
 
     skipHorizontalSpace
     entries <- AP8.decimal
