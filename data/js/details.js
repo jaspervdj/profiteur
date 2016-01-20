@@ -115,11 +115,20 @@ Details.prototype.render = function(node) {
         _this.zoom.setZoom(node);
     });
 
+    var individualTime  = info.individualTime;
+    var individualAlloc = info.individualAlloc;
+    var inheritedTime   = info.inheritedTime;
+    var inheritedAlloc  = info.inheritedAlloc;
+
     var zoom = _this.zoom.getZoom().data.info;
-    var individualTime  = _this.getScaledInfo(info, 'individualTime');
-    var individualAlloc = _this.getScaledInfo(info, 'individualAlloc');
-    var inheritedTime   = _this.getScaledInfo(info, 'inheritedTime');
-    var inheritedAlloc  = _this.getScaledInfo(info, 'inheritedAlloc');
+    var safeDiv = function(x, y) {
+        return y > 0 && _this.zoom.getZoom().parent ? x * 100 / y : x;
+    }
+
+    individualTime  = safeDiv(individualTime, zoom.inheritedTime);
+    individualAlloc = safeDiv(individualAlloc, zoom.inheritedAlloc);
+    inheritedTime   = safeDiv(inheritedTime, zoom.inheritedTime);
+    inheritedAlloc  = safeDiv(inheritedAlloc, zoom.inheritedAlloc);
 
     this.container.find('.module').text(name.module);
     this.container.find('.entries').text(info.entries);
@@ -128,20 +137,6 @@ Details.prototype.render = function(node) {
     this.container.find('.inheritedTime').text(inheritedTime);
     this.container.find('.inheritedAlloc').text(inheritedAlloc);
 };
-
-Details.prototype.getScaledInfo = function(info, key) {
-    var zoom = this.zoom.getZoom();
-    if (!zoom.parent) {
-        return info[key];
-    } else {
-        var scale = zoom.data.info[key];
-        if (scale > 0) {
-            return info[key] * 100 / scale;
-        } else {
-            return info[key];
-        }
-    }
-}
 
 Details.prototype.onChange = function() {
     var node = this.selection.getSelectedNode();
