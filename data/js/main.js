@@ -5,8 +5,7 @@
 function main() {
     var selection = new Selection();
     var sorting = new Sorting();
-    var root = new CostCentreNode(
-            $prof, selection, sorting, undefined, $prof.root);
+    var root = new Node($prof[0], selection, sorting, undefined, $prof[1]);
 
     var zoom = new Zoom(root);
     var tb = new TreeBrowser($('#tree'), zoom);

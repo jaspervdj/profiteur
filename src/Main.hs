@@ -55,8 +55,6 @@ writeReport profFile prof = IO.withBinaryFile htmlFile IO.WriteMode $ \h -> do
     includeJs h "data/js/model.js"
     includeJs h "data/js/resizing-canvas.js"
     includeJs h "data/js/node.js"
-    includeJs h "data/js/individual-node.js"
-    includeJs h "data/js/cost-centre-node.js"
     includeJs h "data/js/selection.js"
     includeJs h "data/js/zoom.js"
     includeJs h "data/js/details.js"
@@ -94,7 +92,7 @@ main = do
             profOrErr <- AP.parseOnly parseFile <$> B.readFile profFile
             case profOrErr of
                 Right prof ->
-                    writeReport profFile $ mkNodeMap $ nodesFromCostCentre prof
+                    writeReport profFile $ nodeMapFromCostCentre prof
                 Left err   -> do
                     putStrLn $ profFile ++ ": " ++ err
                     exitFailure

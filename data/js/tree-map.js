@@ -240,8 +240,7 @@ TreeMap.prototype.onChange = function(source) {
         _this.rects[node.id] = _this.mkRootRect();
         _this.render();
         node.addChangeListener(this);
-    } else if ((source instanceof CostCentreNode) ||
-            (source instanceof IndividualNode)) {
+    } else if (source instanceof Node) {
         _this.render();
         for (var i = 0; i < source.children.length; i++) {
             source.children[i].addChangeListener(this);

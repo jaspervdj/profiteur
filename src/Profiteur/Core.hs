@@ -7,7 +7,8 @@ module Profiteur.Core
     , Node (..)
     , nodesFromCostCentre
     , NodeMap (..)
-    , mkNodeMap
+    , nodeMapFromNodes
+    , nodeMapFromCostCentre
     ) where
 
 
@@ -23,10 +24,14 @@ import qualified Data.Vector         as V
 
 
 --------------------------------------------------------------------------------
+type Id = T.Text
+
+
+--------------------------------------------------------------------------------
 data CostCentre = CostCentre
     { ccName            :: !T.Text
     , ccModule          :: !T.Text
-    , ccId              :: !Int
+    , ccId              :: !Id
     , ccEntries         :: !Int
     , ccIndividualTime  :: !Double
     , ccIndividualAlloc :: !Double
@@ -34,10 +39,6 @@ data CostCentre = CostCentre
     , ccInheritedAlloc  :: !Double
     , ccChildren        :: !(V.Vector CostCentre)
     } deriving (Show)
-
-
---------------------------------------------------------------------------------
-type Id = T.Text
 
 
 --------------------------------------------------------------------------------
@@ -54,31 +55,30 @@ data Node = Node
 
 --------------------------------------------------------------------------------
 nodesFromCostCentre :: CostCentre -> [Node]
-nodesFromCostCentre CostCentre {..} =
-    self : children
+nodesFromCostCentre cc =
+    self : maybeToList indiv ++
+    concatMap nodesFromCostCentre (V.toList $ ccChildren cc)
   where
     self = Node
-        { nId       = T.pack (show ccId)
-        , nName     = ccName
-        , nModule   = ccModule
-        , nEntries  = ccEntries
-        , nTime     = ccInheritedTime
-        , nAlloc    = ccInheritedAlloc
-        , nChildren = V.fromList (map nId children)
+        { nId       = ccId cc
+        , nName     = ccName cc
+        , nModule   = ccModule cc
+        , nEntries  = ccEntries cc
+        , nTime     = ccInheritedTime cc
+        , nAlloc    = ccInheritedAlloc cc
+        , nChildren = V.fromList $
+            maybeToList (nId <$> indiv) ++ map ccId (V.toList $ ccChildren cc)
         }
 
-    children =
-        maybeToList indiv ++ concatMap nodesFromCostCentre (V.toList ccChildren)
-
     indiv = do
-        guard $ ccIndividualTime > 0 || ccIndividualAlloc > 0
+        guard $ ccIndividualTime cc > 0 || ccIndividualAlloc cc > 0
         return Node
             { nId       = nId self <> ".indiv"
-            , nName     = ccName <> " (indiv)"
-            , nModule   = ccModule
-            , nEntries  = ccEntries
-            , nTime     = ccIndividualTime
-            , nAlloc    = ccIndividualAlloc
+            , nName     = ccName cc <> " (indiv)"
+            , nModule   = ccModule cc
+            , nEntries  = ccEntries cc
+            , nTime     = ccIndividualTime cc
+            , nAlloc    = ccIndividualAlloc cc
             , nChildren = V.empty
             }
 
@@ -94,11 +94,31 @@ instance A.ToJSON Node where
         , A.toJSON nChildren
         ]
 
+
 --------------------------------------------------------------------------------
-newtype NodeMap = NodeMap (HMS.HashMap Id Node)
-    deriving (A.ToJSON)
+data NodeMap = NodeMap
+    { nmNodes :: !(HMS.HashMap Id Node)
+    , nmRoot  :: !Id
+    } deriving (Show)
 
 
 --------------------------------------------------------------------------------
-mkNodeMap :: [Node] -> NodeMap
-mkNodeMap = NodeMap . foldl' (\acc n -> HMS.insert (nId n) n acc) HMS.empty
+instance A.ToJSON NodeMap where
+    toJSON NodeMap {..} = A.toJSON
+        [ A.toJSON nmNodes
+        , A.toJSON nmRoot
+        ]
+
+
+--------------------------------------------------------------------------------
+nodeMapFromNodes :: Id -> [Node] -> NodeMap
+nodeMapFromNodes root nodes = NodeMap
+    { nmNodes = foldl' (\acc n -> HMS.insert (nId n) n acc) HMS.empty nodes
+    , nmRoot  = root
+    }
+
+
+--------------------------------------------------------------------------------
+nodeMapFromCostCentre :: CostCentre -> NodeMap
+nodeMapFromCostCentre root =
+    nodeMapFromNodes (ccId root) (nodesFromCostCentre root)

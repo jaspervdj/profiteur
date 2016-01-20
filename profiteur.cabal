@@ -18,9 +18,7 @@ Extra-source-files:
 Data-files:
   data/css/main.css
   data/html/body.html
-  data/js/cost-centre-node.js
   data/js/details.js
-  data/js/individual-node.js
   data/js/main.js
   data/js/model.js
   data/js/node.js

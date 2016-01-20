@@ -67,20 +67,12 @@ Details.prototype.mkElement = function() {
             .append(mk('td').addClass('entries')));
 
     table.append(mk('tr')
-            .append(mk('td').text('Individual time'))
-            .append(mk('td').addClass('individualTime')));
+            .append(mk('td').text('Time'))
+            .append(mk('td').addClass('time')));
 
     table.append(mk('tr')
-            .append(mk('td').text('Individual alloc'))
-            .append(mk('td').addClass('individualAlloc')));
-
-    table.append(mk('tr')
-            .append(mk('td').text('Inherited time'))
-            .append(mk('td').addClass('inheritedTime')));
-
-    table.append(mk('tr')
-            .append(mk('td').text('Inherited alloc'))
-            .append(mk('td').addClass('inheritedAlloc')));
+            .append(mk('td').text('Alloc'))
+            .append(mk('td').addClass('alloc')));
 
     this.container.append(canonical);
     this.container.append(controls);
@@ -89,11 +81,8 @@ Details.prototype.mkElement = function() {
 
 Details.prototype.render = function(node) {
     var _this = this;
-    var data  = node.data;
-    var name  = data.name;
-    var info  = data.info;
 
-    this.container.children('.canonical').text(name.canonical);
+    this.container.children('.canonical').text(node.getCanonicalName());
 
     var up = this.container.find('.up');
     up.off();
@@ -115,27 +104,21 @@ Details.prototype.render = function(node) {
         _this.zoom.setZoom(node);
     });
 
-    var individualTime  = info.individualTime;
-    var individualAlloc = info.individualAlloc;
-    var inheritedTime   = info.inheritedTime;
-    var inheritedAlloc  = info.inheritedAlloc;
+    var time  = node.getTime();
+    var alloc = node.getAlloc();
 
-    var zoom = _this.zoom.getZoom().data.info;
-    var safeDiv = function(x, y) {
-        return y > 0 && _this.zoom.getZoom().parent ? x * 100 / y : x;
+    var zoom = _this.zoom.getZoom();
+    if (zoom.parent && zoom.getTime() > 0) {
+        time = time * 100 / zoom.getTime();
+    }
+    if (zoom.parent && zoom.getAlloc() > 0) {
+        alloc = alloc * 100 / zoom.getAlloc();
     }
 
-    individualTime  = safeDiv(individualTime, zoom.inheritedTime);
-    individualAlloc = safeDiv(individualAlloc, zoom.inheritedAlloc);
-    inheritedTime   = safeDiv(inheritedTime, zoom.inheritedTime);
-    inheritedAlloc  = safeDiv(inheritedAlloc, zoom.inheritedAlloc);
-
-    this.container.find('.module').text(name.module);
-    this.container.find('.entries').text(info.entries);
-    this.container.find('.individualTime').text(individualTime);
-    this.container.find('.individualAlloc').text(individualAlloc);
-    this.container.find('.inheritedTime').text(inheritedTime);
-    this.container.find('.inheritedAlloc').text(inheritedAlloc);
+    this.container.find('.module').text(node.getModuleName());
+    this.container.find('.entries').text(node.getEntries());
+    this.container.find('.time').text(time);
+    this.container.find('.alloc').text(alloc);
 };
 
 Details.prototype.onChange = function() {
