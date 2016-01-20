@@ -1,117 +1,104 @@
 --------------------------------------------------------------------------------
-{-# LANGUAGE BangPatterns      #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE RecordWildCards            #-}
 module Profiteur.Core
-    ( Prof
-    , mkProf
-
-    , CostCentreMap
-    , mkCostCentreMap
-
-    , CostCentreNode (..)
-    , Name (..)
-    , CostCentreInfo (..)
+    ( CostCentre (..)
+    , Node (..)
+    , nodesFromCostCentre
+    , NodeMap (..)
+    , mkNodeMap
     ) where
 
 
 --------------------------------------------------------------------------------
-import           Data.Aeson          ((.=))
+import           Control.Monad       (guard)
 import qualified Data.Aeson          as A
-import           Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as HMS
-import           Data.Text           (Text)
+import           Data.List           (foldl')
+import           Data.Maybe          (maybeToList)
+import           Data.Monoid         ((<>))
 import qualified Data.Text           as T
-import           Data.Vector         (Vector)
 import qualified Data.Vector         as V
 
 
 --------------------------------------------------------------------------------
-data Prof = Prof
-    { pNodes :: !CostCentreMap
-    , pRoot  :: !T.Text
+data CostCentre = CostCentre
+    { ccName            :: !T.Text
+    , ccModule          :: !T.Text
+    , ccId              :: !Int
+    , ccEntries         :: !Int
+    , ccIndividualTime  :: !Double
+    , ccIndividualAlloc :: !Double
+    , ccInheritedTime   :: !Double
+    , ccInheritedAlloc  :: !Double
+    , ccChildren        :: !(V.Vector CostCentre)
     } deriving (Show)
 
 
 --------------------------------------------------------------------------------
-instance A.ToJSON Prof where
-    toJSON p = A.object
-        [ "nodes" .= pNodes p
-        , "root"  .= pRoot  p
-        ]
+type Id = T.Text
 
 
 --------------------------------------------------------------------------------
-mkProf :: CostCentreNode -> Prof
-mkProf ccn = Prof
-    { pNodes = mkCostCentreMap ccn
-    , pRoot  = ccnId ccn
-    }
+data Node = Node
+    { nId       :: !Id
+    , nName     :: !T.Text
+    , nModule   :: !T.Text
+    , nEntries  :: !Int
+    , nTime     :: !Double
+    , nAlloc    :: !Double
+    , nChildren :: !(V.Vector Id)
+    } deriving (Show)
 
 
 --------------------------------------------------------------------------------
-type CostCentreMap = HashMap Text CostCentreNode
-
-
---------------------------------------------------------------------------------
-mkCostCentreMap :: CostCentreNode -> CostCentreMap
-mkCostCentreMap = go HMS.empty
+nodesFromCostCentre :: CostCentre -> [Node]
+nodesFromCostCentre CostCentre {..} =
+    self : children
   where
-    go :: CostCentreMap -> CostCentreNode -> CostCentreMap
-    go ccm !ccn =
-        HMS.insert (ccnId ccn) ccn $
-        V.foldl' go ccm (ccnChildren ccn)
+    self = Node
+        { nId       = T.pack (show ccId)
+        , nName     = ccName
+        , nModule   = ccModule
+        , nEntries  = ccEntries
+        , nTime     = ccInheritedTime
+        , nAlloc    = ccInheritedAlloc
+        , nChildren = V.fromList (map nId children)
+        }
+
+    children =
+        maybeToList indiv ++ concatMap nodesFromCostCentre (V.toList ccChildren)
+
+    indiv = do
+        guard $ ccIndividualTime > 0 || ccIndividualAlloc > 0
+        return Node
+            { nId       = nId self <> ".indiv"
+            , nName     = ccName <> " (indiv)"
+            , nModule   = ccModule
+            , nEntries  = ccEntries
+            , nTime     = ccIndividualTime
+            , nAlloc    = ccIndividualAlloc
+            , nChildren = V.empty
+            }
 
 
 --------------------------------------------------------------------------------
-data CostCentreNode = CostCentreNode
-    { ccnName     :: !Name
-    , ccnId       :: !T.Text
-    , ccnInfo     :: !CostCentreInfo
-    , ccnChildren :: !(Vector CostCentreNode)
-    } deriving (Show)
-
-
---------------------------------------------------------------------------------
-instance A.ToJSON CostCentreNode where
-    toJSON ccn = A.object
-        [ "name"     .= ccnName ccn
-        , "id"       .= ccnId   ccn
-        , "info"     .= ccnInfo ccn
-        , "children" .= V.map ccnId (ccnChildren ccn)
+instance A.ToJSON Node where
+    toJSON Node {..} = A.toJSON
+        [ A.toJSON nName
+        , A.toJSON nModule
+        , A.toJSON nEntries
+        , A.toJSON nTime
+        , A.toJSON nAlloc
+        , A.toJSON nChildren
         ]
 
-
 --------------------------------------------------------------------------------
-data Name = Name
-    { nCanonical :: !Text
-    , nModule    :: !Text
-    } deriving (Show, Eq)
+newtype NodeMap = NodeMap (HMS.HashMap Id Node)
+    deriving (A.ToJSON)
 
 
 --------------------------------------------------------------------------------
-instance A.ToJSON Name where
-    toJSON n = A.object
-        [ "canonical" .= nCanonical n
-        , "module"    .= nModule    n
-        ]
-
-
---------------------------------------------------------------------------------
-data CostCentreInfo = CostCentreInfo
-    { cciEntries         :: !Int
-    , cciIndividualTime  :: !Double
-    , cciIndividualAlloc :: !Double
-    , cciInheritedTime   :: !Double
-    , cciInheritedAlloc  :: !Double
-    } deriving (Show)
-
-
---------------------------------------------------------------------------------
-instance A.ToJSON CostCentreInfo where
-    toJSON cci = A.object
-        [ "entries"         .= cciEntries         cci
-        , "individualTime"  .= cciIndividualTime  cci
-        , "individualAlloc" .= cciIndividualAlloc cci
-        , "inheritedTime"   .= cciInheritedTime   cci
-        , "inheritedAlloc"  .= cciInheritedAlloc  cci
-        ]
+mkNodeMap :: [Node] -> NodeMap
+mkNodeMap = NodeMap . foldl' (\acc n -> HMS.insert (nId n) n acc) HMS.empty

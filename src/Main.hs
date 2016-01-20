@@ -6,23 +6,21 @@ module Main
 
 
 --------------------------------------------------------------------------------
-import           Control.Applicative   ((<$>))
-import qualified Data.Aeson            as Aeson
-import qualified Data.Attoparsec       as AP
-import qualified Data.ByteString       as B
-import qualified Data.ByteString.Char8 as BC8
-import qualified Data.ByteString.Lazy  as BL
-import           Data.Monoid           (mappend)
-import qualified Data.Text             as T
-import qualified Data.Text.Encoding    as T
-import           System.Environment    (getArgs, getProgName)
-import           System.Exit           (exitFailure)
-import           System.FilePath       (takeBaseName)
-import qualified System.IO             as IO
+import qualified Data.Aeson                 as Aeson
+import qualified Data.Attoparsec.ByteString as AP
+import qualified Data.ByteString            as B
+import qualified Data.ByteString.Char8      as BC8
+import qualified Data.ByteString.Lazy       as BL
+import qualified Data.Text                  as T
+import qualified Data.Text.Encoding         as T
+import           System.Environment         (getArgs, getProgName)
+import           System.Exit                (exitFailure)
+import           System.FilePath            (takeBaseName)
+import qualified System.IO                  as IO
 
 
 --------------------------------------------------------------------------------
-import           Paths_profiteur       (getDataFileName)
+import           Paths_profiteur            (getDataFileName)
 import           Profiteur.Core
 import           Profiteur.Parser
 
@@ -35,7 +33,7 @@ includeFile h dataFile = do
 
 
 --------------------------------------------------------------------------------
-writeReport :: String -> Prof -> IO ()
+writeReport :: String -> NodeMap -> IO ()
 writeReport profFile prof = IO.withBinaryFile htmlFile IO.WriteMode $ \h -> do
     BC8.hPutStrLn h $
         "<!DOCTYPE html>\n\
@@ -93,9 +91,10 @@ main = do
     args     <- getArgs
     case args of
         [profFile] -> do
-            profOrErr <- AP.parseOnly parseProf <$> B.readFile profFile
+            profOrErr <- AP.parseOnly parseFile <$> B.readFile profFile
             case profOrErr of
-                Right prof -> writeReport profFile prof
+                Right prof ->
+                    writeReport profFile $ mkNodeMap $ nodesFromCostCentre prof
                 Left err   -> do
                     putStrLn $ profFile ++ ": " ++ err
                     exitFailure

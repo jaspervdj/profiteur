@@ -1,17 +1,15 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
 module Profiteur.Parser
-    ( parseProf
+    ( parseFile
     ) where
 
 
 --------------------------------------------------------------------------------
-import           Control.Applicative              ((<$>))
 import           Control.Monad                    (replicateM_)
 import           Data.Attoparsec.ByteString       as AP
 import           Data.Attoparsec.ByteString.Char8 as AP8
 import           Data.Text                        (Text)
-import qualified Data.Text                        as T
 import qualified Data.Text.Encoding               as T
 import qualified Data.Vector                      as V
 
@@ -21,25 +19,25 @@ import           Profiteur.Core
 
 
 --------------------------------------------------------------------------------
-parseProf :: AP.Parser Prof
-parseProf = fmap mkProf $ do
+parseFile :: AP.Parser CostCentre
+parseFile = do
     -- Hacky stuff.
     _ <- AP.manyTill AP8.anyChar (AP.try $ AP8.string "COST CENTRE")
     _ <- AP.manyTill AP8.anyChar (AP.try $ AP8.string "COST CENTRE")
     _ <- AP.skipWhile (not . AP8.isEndOfLine)
     _ <- AP8.skipSpace
-    parseContCentreNode 0
+    paresCostCentre 0
 
 
 --------------------------------------------------------------------------------
-parseContCentreNode :: Int -> AP.Parser CostCentreNode
-parseContCentreNode indent = do
+paresCostCentre :: Int -> AP.Parser CostCentre
+paresCostCentre indent = do
     replicateM_ indent $ AP8.char8 ' '
     canonical <- identifier
     skipHorizontalSpace
     module' <- identifier
     skipHorizontalSpace
-    id' <- T.pack . show <$> (AP8.decimal :: AP.Parser Int)
+    id' <- AP8.decimal
 
     skipHorizontalSpace
     entries <- AP8.decimal
@@ -53,22 +51,18 @@ parseContCentreNode indent = do
     inheritedAlloc <- AP8.double
     skipToEol
 
-    children <- AP.many' $ parseContCentreNode (indent + 1)
+    children <- AP.many' $ paresCostCentre (indent + 1)
 
-    return CostCentreNode
-        { ccnName     = Name
-            { nCanonical = canonical
-            , nModule    = module'
-            }
-        , ccnId       = id'
-        , ccnInfo     = CostCentreInfo
-            { cciEntries         = entries
-            , cciIndividualTime  = individualTime
-            , cciIndividualAlloc = individualAlloc
-            , cciInheritedTime   = inheritedTime
-            , cciInheritedAlloc  = inheritedAlloc
-            }
-        , ccnChildren = V.fromList children
+    return CostCentre
+        { ccName            = canonical
+        , ccModule          = module'
+        , ccId              = id'
+        , ccEntries         = entries
+        , ccIndividualTime  = individualTime
+        , ccIndividualAlloc = individualAlloc
+        , ccInheritedTime   = inheritedTime
+        , ccInheritedAlloc  = inheritedAlloc
+        , ccChildren        = V.fromList children
         }
 
 
