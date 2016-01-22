@@ -1,6 +1,7 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE PatternGuards              #-}
 {-# LANGUAGE RecordWildCards            #-}
 module Profiteur.Core
     ( CostCentre (..)
@@ -55,9 +56,13 @@ data Node = Node
 
 --------------------------------------------------------------------------------
 nodesFromCostCentre :: CostCentre -> [Node]
-nodesFromCostCentre cc =
-    self : maybeToList indiv ++
-    concatMap nodesFromCostCentre (V.toList $ ccChildren cc)
+nodesFromCostCentre cc
+    | V.null (ccChildren cc), Just indiv' <- indiv =
+        [ indiv' {nId = nId self, nName = nName self}
+        ]
+    | otherwise =
+        self : maybeToList indiv ++
+        concatMap nodesFromCostCentre (V.toList $ ccChildren cc)
   where
     self = Node
         { nId       = ccId cc
