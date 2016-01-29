@@ -1,4 +1,8 @@
-* 0.2.0.2
+- 0.3.0.0
+    * Simplify the tree, creating actual (indiv) nodes where necessary from the
+      Haskell code
+
+- 0.2.0.2
     * Bump `aeson` and `vector` dependencies
 
 - 0.2.0.1
