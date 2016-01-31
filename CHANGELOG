@@ -1,3 +1,6 @@
+- 0.3.0.1
+    * Bump base version, add example to repo
+
 - 0.3.0.0
     * Simplify the tree, creating actual (indiv) nodes where necessary from the
       Haskell code

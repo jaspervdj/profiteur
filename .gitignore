@@ -1,1 +1,9 @@
 dist
+.cabal-sandbox
+.stack-work
+
+example/binary-trees
+example/binary-trees.hi
+example/binary-trees.o
+example/binary-trees.prof
+example/binary-trees.prof.html

@@ -14,3 +14,5 @@ Usage
     ghc --make -auto-all -prof your-program.hs
     ./your-program +RTS -p -RTS
     profiteur your-program.prof
+
+See also [example/Makefile].
