@@ -15,4 +15,4 @@ Usage
     ./your-program +RTS -p -RTS
     profiteur your-program.prof
 
-See also [example/Makefile].
+See also [example/Makefile](example/Makefile).
