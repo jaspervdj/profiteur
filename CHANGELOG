@@ -1,3 +1,6 @@
+- 0.3.0.2
+    * Bump `aeson` dependency
+
 - 0.3.0.1
     * Bump base version, add example to repo
 
