@@ -31,18 +31,32 @@ Data-files:
   data/js/zoom.js
   data/lib/jquery-1.11.0.min.js
 
+Flag embed_data
+  description: Embed data files into the library (needed for ghcjs packaging)
+  default:     False
+
 Source-repository head
   Type: git
   Location: git://github.com/jaspervdj/profiteur.git
 
-Executable profiteur
-  Main-is:        Main.hs
+Library
+  Exposed-modules:
+    Profiteur
   Hs-source-dirs: src
   Ghc-options:    -Wall
 
   Other-modules:
     Profiteur.Core
     Profiteur.Parser
+    Profiteur.Data
+    Profiteur.Report
+  if !flag(embed_data)
+    Other-modules:
+      Paths_profiteur
+
+  if flag(embed_data)
+    cpp-options:   -DEMBED_DATA_FILES
+    Build-depends: file-embed >= 0.0.9 && < 0.0.11
 
   Build-depends:
     base                 >= 4.8  && < 5,
@@ -53,3 +67,13 @@ Executable profiteur
     filepath             >= 1.3  && < 1.5,
     unordered-containers >= 0.2  && < 0.3,
     vector               >= 0.10 && < 0.12
+
+Executable profiteur
+  Main-is:        Main.hs
+  Hs-source-dirs: app
+  Ghc-options:    -Wall
+
+  Build-depends:
+    base                 >= 4.8  && < 5,
+    bytestring           >= 0.9  && < 0.11,
+    profiteur
