@@ -56,7 +56,7 @@ Library
 
   if flag(embed_data)
     cpp-options:   -DEMBED_DATA_FILES
-    Build-depends: file-embed >= 0.0.9 && < 0.0.10
+    Build-depends: file-embed >= 0.0.9 && < 0.0.11
 
   Build-depends:
     base                 >= 4.8  && < 5,
