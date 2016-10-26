@@ -1,5 +1,5 @@
 Name:                profiteur
-Version:             0.3.0.2
+Version:             0.3.0.3
 Synopsis:            Treemap visualiser for GHC prof files
 Description:         Treemap visualiser for GHC prof files
 Homepage:            http://github.com/jaspervdj/profiteur
@@ -46,7 +46,7 @@ Executable profiteur
 
   Build-depends:
     base                 >= 4.8  && < 5,
-    aeson                >= 0.6  && < 0.12,
+    aeson                >= 0.6  && < 1.1,
     attoparsec           >= 0.10 && < 0.14,
     bytestring           >= 0.9  && < 0.11,
     text                 >= 0.11 && < 1.3,
