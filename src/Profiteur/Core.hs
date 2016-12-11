@@ -18,7 +18,7 @@ import           Control.Monad       (guard)
 import qualified Data.Aeson          as A
 import qualified Data.HashMap.Strict as HMS
 import           Data.List           (foldl')
-import           Data.Maybe          (maybeToList)
+import           Data.Maybe          (mapMaybe, maybeToList)
 import           Data.Monoid         ((<>))
 import qualified Data.Text           as T
 import qualified Data.Vector         as V
@@ -55,30 +55,36 @@ data Node = Node
 
 
 --------------------------------------------------------------------------------
-nodesFromCostCentre :: CostCentre -> [Node]
+-- | Returns the node and its (transitive) children.
+nodesFromCostCentre :: CostCentre -> Maybe (Node, [Node])
 nodesFromCostCentre cc
     | V.null (ccChildren cc), Just indiv' <- indiv =
-        [ indiv' {nId = nId self, nName = nName self}
-        ]
-    | otherwise =
-        self : maybeToList indiv ++
-        concatMap nodesFromCostCentre (V.toList $ ccChildren cc)
-  where
-    self = Node
-        { nId       = ccId cc
-        , nName     = ccName cc
-        , nModule   = ccModule cc
-        , nEntries  = ccEntries cc
-        , nTime     = ccInheritedTime cc
-        , nAlloc    = ccInheritedAlloc cc
-        , nChildren = V.fromList $
-            maybeToList (nId <$> indiv) ++ map ccId (V.toList $ ccChildren cc)
-        }
+        Just (indiv' {nId = ccId cc, nName = ccName cc}, [])
+    | otherwise = do
+        guard $ ccInheritedTime cc > 0 || ccInheritedAlloc cc > 0
 
+        let (children, grandChildren) = unzip $
+                mapMaybe nodesFromCostCentre (V.toList $ ccChildren cc)
+
+        let allChildren = maybeToList indiv ++ children ++ concat grandChildren
+
+        let self = Node
+                { nId       = ccId cc
+                , nName     = ccName cc
+                , nModule   = ccModule cc
+                , nEntries  = ccEntries cc
+                , nTime     = ccInheritedTime cc
+                , nAlloc    = ccInheritedAlloc cc
+                , nChildren = V.fromList $ map nId $
+                    maybeToList indiv ++ children
+                }
+
+        return (self, allChildren)
+  where
     indiv = do
         guard $ ccIndividualTime cc > 0 || ccIndividualAlloc cc > 0
         return Node
-            { nId       = nId self <> ".indiv"
+            { nId       = ccId cc <> ".indiv"
             , nName     = ccName cc <> " (indiv)"
             , nModule   = ccModule cc
             , nEntries  = ccEntries cc
@@ -126,4 +132,8 @@ nodeMapFromNodes root nodes = NodeMap
 --------------------------------------------------------------------------------
 nodeMapFromCostCentre :: CostCentre -> NodeMap
 nodeMapFromCostCentre root =
-    nodeMapFromNodes (ccId root) (nodesFromCostCentre root)
+    nodeMapFromNodes (ccId root) nodes
+  where
+    nodes = case nodesFromCostCentre root of
+        Nothing      -> []
+        Just (n, ns) -> n : ns
