@@ -16,3 +16,10 @@ Usage
     profiteur your-program.prof
 
 See also [example/Makefile](example/Makefile).
+
+A tree browser and a tree map are available to browse the profile.
+
+Expand cost centres by clicking the chevrons in the tree browser or
+double-clicking them in the tree map.
+
+![Screenshot](example/screenshot.png)
