@@ -1,5 +1,5 @@
 Name:                profiteur
-Version:             0.3.0.3
+Version:             0.4.0.0
 Synopsis:            Treemap visualiser for GHC prof files
 Description:         Treemap visualiser for GHC prof files
 Homepage:            http://github.com/jaspervdj/profiteur
@@ -13,8 +13,8 @@ Build-type:          Simple
 Cabal-version:       >= 1.8
 
 Extra-source-files:
-  CHANGELOG
-  README.markdown
+  CHANGELOG.md
+  README.md
 
 Data-files:
   data/css/main.css

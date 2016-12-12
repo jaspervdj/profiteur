@@ -1,3 +1,9 @@
+- 0.4.0.0
+    * Always show time/alloc relative to MAIN as well as relative to the current
+      root node
+    * Replace help button by link to homepage
+    * Never include (0 time, 0 alloc) nodes
+
 - 0.3.0.3
     * Bump `aeson` dependency
 
