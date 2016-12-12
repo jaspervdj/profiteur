@@ -16,6 +16,10 @@ body {
     width:  100%;
 }
 
+a {
+    color: #8ee2f9;
+}
+
 #details-tree {
     position: absolute;
     left:     0px;
@@ -28,6 +32,7 @@ body {
     height:        33%;
     overflow:      auto;
     top:           0px;
+    position:      relative;
 }
 
 #tree {
@@ -61,6 +66,13 @@ body {
 
 #details td {
     padding-right: 15px;
+}
+
+#details .credits {
+    font-size: 12px;
+    position:  absolute;
+    bottom:    0px;
+    margin:    5px;
 }
 
 /* Tree browser
