@@ -16,8 +16,6 @@ function Details(container, selection, sorting, zoom) {
 Details.prototype.mkElement = function() {
     var _this = this;
 
-    var canonical = mk('h1').addClass('canonical');
-
     var controls = mk('div').addClass('controls');
 
     var up = mk('button').addClass('up').text(Unicode.UP_TRIANGLE + ' parent');
@@ -38,6 +36,8 @@ Details.prototype.mkElement = function() {
         _this.sorting.setMethodByKey(combo.val());
     });
     controls.append(combo);
+
+    var canonical = mk('h1').addClass('canonical');
 
     var table = mk('table');
 
@@ -70,8 +70,8 @@ Details.prototype.mkElement = function() {
         '<a href="http://github.com/jaspervdj/profiteur" ' +
         'target="_blank">profiteur</a>.');
 
-    this.container.append(canonical);
     this.container.append(controls);
+    this.container.append(canonical);
     this.container.append(table);
     this.container.append(credits);
 };

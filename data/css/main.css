@@ -60,6 +60,10 @@ a {
     margin:      5px;
 }
 
+#details .controls {
+    margin: 5px;
+}
+
 #details table {
     margin: 5px;
 }
