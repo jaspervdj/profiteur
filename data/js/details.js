@@ -114,12 +114,19 @@ Details.prototype.render = function(node) {
         alloc = alloc * 100 / zoom.getAlloc();
     }
 
+    /* The default Number.prototype.toFixed adds 0s and we don't want that. */
+    var precision = 3;
+    function formatNum(value) {
+        var power = Math.pow(10, precision || 0);
+        return String(Math.round(value * power) / power);
+    }
+
     this.container.find('.module').text(node.getModuleName());
     this.container.find('.entries').text(node.getEntries());
-    this.container.find('.time').text(time);
-    this.container.find('.alloc').text(alloc);
-    this.container.find('.mainTime').text(mainTime);
-    this.container.find('.mainAlloc').text(mainAlloc);
+    this.container.find('.time').text(formatNum(time));
+    this.container.find('.alloc').text(formatNum(alloc));
+    this.container.find('.mainTime').text(formatNum(mainTime));
+    this.container.find('.mainAlloc').text(formatNum(mainAlloc));
 
     if (zoom.parent) {
         this.container.find('.mainTimeRow').show();
