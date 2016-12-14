@@ -15,8 +15,8 @@ function ResizingCanvas(container) {
 }
 
 ResizingCanvas.prototype.checkSize = function() {
-    var width  = this.container.width();
-    var height = this.container.height();
+    var width  = Math.floor(this.container.width());
+    var height = Math.floor(this.container.height());
     if (width !== this.canvas.width || height !== this.canvas.height) {
         this.canvas.width  = width;
         this.canvas.height = height;
