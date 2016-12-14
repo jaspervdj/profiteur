@@ -1,3 +1,9 @@
+- 0.4.1.0
+    * Format numbers in "Details" to have 3 decimal places
+    * Move name below controls in "Details"
+    * Use the `js-jquery` library instead of just including it
+    * Upgrade to jQuery 3.1
+
 - 0.4.0.0
     * Always show time/alloc relative to MAIN as well as relative to the current
       root node
