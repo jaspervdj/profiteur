@@ -13,6 +13,7 @@ import qualified Data.ByteString.Char8      as BC8
 import qualified Data.ByteString.Lazy       as BL
 import qualified Data.Text                  as T
 import qualified Data.Text.Encoding         as T
+import qualified Language.Javascript.JQuery as JQuery
 import           System.Environment         (getArgs, getProgName)
 import           System.Exit                (exitFailure)
 import           System.FilePath            (takeBaseName)
@@ -27,9 +28,8 @@ import           Profiteur.Parser
 
 --------------------------------------------------------------------------------
 includeFile :: IO.Handle -> FilePath -> IO ()
-includeFile h dataFile = do
-    fileName <- getDataFileName dataFile
-    BL.hPutStr h =<< BL.readFile fileName
+includeFile h filePath =
+    BL.hPutStr h =<< BL.readFile filePath
 
 
 --------------------------------------------------------------------------------
@@ -47,26 +47,26 @@ writeReport profFile prof = IO.withBinaryFile htmlFile IO.WriteMode $ \h -> do
     BC8.hPutStrLn h ";</script>"
 
     BC8.hPutStrLn h "<style>"
-    includeFile h "data/css/main.css"
+    includeFile h =<< getDataFileName "data/css/main.css"
     BC8.hPutStrLn h "</style>"
 
-    includeJs h "data/lib/jquery-1.11.0.min.js"
-    includeJs h "data/js/unicode.js"
-    includeJs h "data/js/model.js"
-    includeJs h "data/js/resizing-canvas.js"
-    includeJs h "data/js/node.js"
-    includeJs h "data/js/selection.js"
-    includeJs h "data/js/zoom.js"
-    includeJs h "data/js/details.js"
-    includeJs h "data/js/sorting.js"
-    includeJs h "data/js/tree-map.js"
-    includeJs h "data/js/tree-browser.js"
-    includeJs h "data/js/main.js"
+    includeJs h =<< JQuery.file
+    includeJs h =<< getDataFileName "data/js/unicode.js"
+    includeJs h =<< getDataFileName "data/js/model.js"
+    includeJs h =<< getDataFileName "data/js/resizing-canvas.js"
+    includeJs h =<< getDataFileName "data/js/node.js"
+    includeJs h =<< getDataFileName "data/js/selection.js"
+    includeJs h =<< getDataFileName "data/js/zoom.js"
+    includeJs h =<< getDataFileName "data/js/details.js"
+    includeJs h =<< getDataFileName "data/js/sorting.js"
+    includeJs h =<< getDataFileName "data/js/tree-map.js"
+    includeJs h =<< getDataFileName "data/js/tree-browser.js"
+    includeJs h =<< getDataFileName "data/js/main.js"
 
     BC8.hPutStrLn h
         "  </head>\n\
         \  <body>"
-    includeFile h "data/html/body.html"
+    includeFile h =<< getDataFileName "data/html/body.html"
     BC8.hPutStrLn h
         "  </body>\
         \</html>"

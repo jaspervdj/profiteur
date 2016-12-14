@@ -30,7 +30,6 @@ Data-files:
   data/js/tree-map.js
   data/js/unicode.js
   data/js/zoom.js
-  data/lib/jquery-1.11.0.min.js
 
 Source-repository head
   Type: git
@@ -46,11 +45,12 @@ Executable profiteur
     Profiteur.Parser
 
   Build-depends:
-    base                 >= 4.8  && < 5,
     aeson                >= 0.6  && < 1.1,
     attoparsec           >= 0.10 && < 0.14,
+    base                 >= 4.8  && < 5,
     bytestring           >= 0.9  && < 0.11,
-    text                 >= 0.11 && < 1.3,
     filepath             >= 1.3  && < 1.5,
+    js-jquery            >= 1.11 && < 1.11.2,
+    text                 >= 0.11 && < 1.3,
     unordered-containers >= 0.2  && < 0.3,
     vector               >= 0.10 && < 0.12
