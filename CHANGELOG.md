@@ -1,3 +1,8 @@
+- 0.4.2.0
+    * Use the new `ghc-prof` instead of our own hacky prof parser
+    * Bump `aeson` dependency to 1.1
+    * Bump `vector` dependency to 0.12
+
 - 0.4.1.0
     * Format numbers in "Details" to have 3 decimal places
     * Move name below controls in "Details"
