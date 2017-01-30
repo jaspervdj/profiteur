@@ -1,18 +1,19 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
 module Profiteur.Parser
-    ( parseFile
+    ( decode
     ) where
 
 
 --------------------------------------------------------------------------------
-import           Control.Monad                    (replicateM_)
-import           Data.Attoparsec.ByteString       as AP
-import           Data.Attoparsec.ByteString.Char8 as AP8
-import           Data.Text                        (Text)
-import qualified Data.Text                        as T
-import qualified Data.Text.Encoding               as T
-import qualified Data.Vector                      as V
+import qualified Data.IntMap     as IM
+import qualified Data.Scientific as Scientific
+import qualified Data.Set        as Set
+import qualified Data.Text       as T
+import qualified Data.Text.Lazy  as TL
+import qualified Data.Vector     as V
+import qualified GHC.Prof        as Prof
+import qualified GHC.Prof.Types  as Prof
 
 
 --------------------------------------------------------------------------------
@@ -20,65 +21,49 @@ import           Profiteur.Core
 
 
 --------------------------------------------------------------------------------
-parseFile :: AP.Parser CostCentre
-parseFile = do
-    -- Hacky stuff.
-    _ <- AP.manyTill AP8.anyChar (AP.try $ AP8.string "COST CENTRE")
-    _ <- AP.manyTill AP8.anyChar (AP.try $ AP8.string "COST CENTRE")
-    _ <- AP.skipWhile (not . AP8.isEndOfLine)
-    _ <- AP8.skipSpace
-    paresCostCentre 0
+decode :: TL.Text -> Either String CostCentre
+decode txt = Prof.decode txt >>= profileToCostCentre
 
 
 --------------------------------------------------------------------------------
-paresCostCentre :: Int -> AP.Parser CostCentre
-paresCostCentre indent = do
-    replicateM_ indent $ AP8.char8 ' '
-    canonical <- identifier
-    skipHorizontalSpace
-    module' <- identifier
-    skipHorizontalSpace
-    id' <- T.pack . show <$> (AP8.decimal :: AP.Parser Int)
+profileToCostCentre :: Prof.Profile -> Either String CostCentre
+profileToCostCentre prof = do
+    rootNo <- findRoot
+    toCostCentreByNo rootNo
+  where
+    tree :: Prof.CostCentreTree
+    tree = Prof.profileCostCentreTree prof
 
-    skipHorizontalSpace
-    entries <- AP8.decimal
-    skipHorizontalSpace
-    individualTime <- AP8.double
-    skipHorizontalSpace
-    individualAlloc <- AP8.double
-    skipHorizontalSpace
-    inheritedTime <- AP8.double
-    skipHorizontalSpace
-    inheritedAlloc <- AP8.double
-    skipToEol
+    findRoot :: Either String Prof.CostCentreNo
+    findRoot = case IM.toList (Prof.costCentreParents tree) of
+        []            -> Left "Could not find root node"
+        ((_, no) : _) -> go no
+      where
+        go no = case IM.lookup no (Prof.costCentreParents tree) of
+            Nothing  -> Right no
+            Just par -> go par
 
-    children <- AP.many' $ paresCostCentre (indent + 1)
+    toCostCentreByNo :: Prof.CostCentreNo -> Either String CostCentre
+    toCostCentreByNo no = do
+        cc <- maybe (Left $ "Could not find CCN " ++ show no) Right $
+            IM.lookup no (Prof.costCentreNodes tree)
+        toCostCentreByNode cc
 
-    return CostCentre
-        { ccName            = canonical
-        , ccModule          = module'
-        , ccId              = id'
-        , ccEntries         = entries
-        , ccIndividualTime  = individualTime
-        , ccIndividualAlloc = individualAlloc
-        , ccInheritedTime   = inheritedTime
-        , ccInheritedAlloc  = inheritedAlloc
-        , ccChildren        = V.fromList children
-        }
+    toCostCentreByNode :: Prof.CostCentre -> Either String CostCentre
+    toCostCentreByNode cc = do
+        let no            = Prof.costCentreNo cc
+            childrenNodes = maybe [] Set.toList $
+                IM.lookup no (Prof.costCentreChildren tree)
+        children <- V.mapM toCostCentreByNode (V.fromList childrenNodes)
 
-
---------------------------------------------------------------------------------
-identifier :: AP.Parser Text
-identifier = T.decodeUtf8 <$> AP8.takeWhile (not . AP8.isSpace)
-
-
---------------------------------------------------------------------------------
-skipHorizontalSpace :: AP.Parser ()
-skipHorizontalSpace = AP.skipWhile AP8.isHorizontalSpace
-
-
---------------------------------------------------------------------------------
-skipToEol :: AP.Parser ()
-skipToEol = do
-    AP.skipWhile (not . AP8.isEndOfLine)
-    AP8.endOfLine
+        return CostCentre
+            { ccName            = Prof.costCentreName cc
+            , ccModule          = Prof.costCentreModule cc
+            , ccId              = T.pack (show $ no)
+            , ccEntries         = fromIntegral (Prof.costCentreEntries cc)
+            , ccIndividualTime  = Scientific.toRealFloat (Prof.costCentreIndTime cc)
+            , ccIndividualAlloc = Scientific.toRealFloat (Prof.costCentreIndAlloc cc)
+            , ccInheritedTime   = Scientific.toRealFloat (Prof.costCentreInhTime cc)
+            , ccInheritedAlloc  = Scientific.toRealFloat (Prof.costCentreInhAlloc cc)
+            , ccChildren        = children
+            }

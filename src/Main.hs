@@ -7,12 +7,11 @@ module Main
 
 --------------------------------------------------------------------------------
 import qualified Data.Aeson                 as Aeson
-import qualified Data.Attoparsec.ByteString as AP
-import qualified Data.ByteString            as B
 import qualified Data.ByteString.Char8      as BC8
 import qualified Data.ByteString.Lazy       as BL
 import qualified Data.Text                  as T
 import qualified Data.Text.Encoding         as T
+import qualified Data.Text.Lazy.IO          as TL
 import qualified Language.Javascript.JQuery as JQuery
 import           System.Environment         (getArgs, getProgName)
 import           System.Exit                (exitFailure)
@@ -89,7 +88,7 @@ main = do
     args     <- getArgs
     case args of
         [profFile] -> do
-            profOrErr <- AP.parseOnly parseFile <$> B.readFile profFile
+            profOrErr <- decode <$> TL.readFile profFile
             case profOrErr of
                 Right prof ->
                     writeReport profFile $ nodeMapFromCostCentre prof
