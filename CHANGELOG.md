@@ -1,3 +1,6 @@
+- 0.4.2.1
+    * Bump `ghc-prof` dependency to 1.4
+
 - 0.4.2.0
     * Use the new `ghc-prof` instead of our own hacky prof parser
     * Bump `aeson` dependency to 1.1
