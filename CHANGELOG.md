@@ -1,3 +1,6 @@
+- 0.4.2.2
+    * Bump `js-jquery` dependency to 3.2
+
 - 0.4.2.1
     * Bump `ghc-prof` dependency to 1.4
 
