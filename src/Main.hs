@@ -12,6 +12,7 @@ import qualified Data.ByteString.Lazy       as BL
 import qualified Data.Text                  as T
 import qualified Data.Text.Encoding         as T
 import qualified Data.Text.Lazy.IO          as TL
+import           Data.Version               (showVersion)
 import qualified Language.Javascript.JQuery as JQuery
 import           System.Environment         (getArgs, getProgName)
 import           System.Exit                (exitFailure)
@@ -20,7 +21,7 @@ import qualified System.IO                  as IO
 
 
 --------------------------------------------------------------------------------
-import           Paths_profiteur            (getDataFileName)
+import           Paths_profiteur            (getDataFileName, version)
 import           Profiteur.Core
 import           Profiteur.Parser
 
@@ -87,6 +88,8 @@ main = do
     progName <- getProgName
     args     <- getArgs
     case args of
+        _ | "--version" `elem` args ->
+            putStrLn (showVersion version)
         [profFile] -> do
             profOrErr <- decode <$> TL.readFile profFile
             case profOrErr of
@@ -95,6 +98,6 @@ main = do
                 Left err   -> do
                     putStrLn $ profFile ++ ": " ++ err
                     exitFailure
-        _          -> do
+        _ -> do
             putStrLn $ "Usage: " ++ progName ++ " <prof file>"
             exitFailure
