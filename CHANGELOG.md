@@ -1,3 +1,7 @@
+- 0.4.3.0
+    * Add `--version` flag
+    * Bump `aeson` dependency to 1.2
+
 - 0.4.2.2
     * Bump `js-jquery` dependency to 3.2
 
