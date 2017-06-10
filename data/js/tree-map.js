@@ -219,6 +219,8 @@ TreeMap.prototype.renderNode = function(node) {
     // Fill entire area
     context.fillStyle = node.getColor();
     context.fillRect(rect.x, rect.y, rect.w, rect.h);
+    context.strokeStyle = 'black';
+    context.strokeRect(rect.x, rect.y, rect.w, rect.h);
 
     // Draw children on top.
     if (node.children.length > 0) {
