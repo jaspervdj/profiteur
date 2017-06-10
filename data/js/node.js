@@ -85,29 +85,10 @@ Node.prototype.getColor = function() {
         hash = (hash << 5) + hash + str.charCodeAt(i);
     }
 
-    hash = hash % 0xffffff;
-    var r = (hash & 0xff0000) >> 16;
-    var g = (hash & 0x00ff00) >> 8;
-    var b = (hash & 0x0000ff);
-
-    r = (r) / 2;
-    g = (g) / 2;
-    b = (b) / 2;
-
-    function hex2(x) {
-        var str = x.toString(16);
-        if (str.length < 2) {
-            for (var i = 0; i < 2 - str.length; i++) {
-                str = '0' + str;
-            }
-        }
-        return str;
-    }
-
-    return '#' +
-        hex2(Math.round(r)) +
-        hex2(Math.round(g)) +
-        hex2(Math.round(b));
+    var h = hash % 360;
+    var s = "100%";
+    var l = "40%";
+    return 'hsl(' + h + ', ' + s + ', ' + l + ')';
 };
 
 Node.prototype.getCost = function() {
