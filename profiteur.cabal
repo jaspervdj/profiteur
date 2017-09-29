@@ -8,7 +8,7 @@ License-file:        LICENSE
 Author:              Jasper Van der Jeugt <m@jaspervdj.be>
 Maintainer:          Jasper Van der Jeugt <m@jaspervdj.be>
 Copyright:           2014 Jasper Van der Jeugt
-Category:            Development
+Category:            Development, Profiling
 Build-type:          Simple
 Cabal-version:       >= 1.8
 
