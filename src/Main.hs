@@ -13,7 +13,6 @@ import qualified Data.Text                  as T
 import qualified Data.Text.Encoding         as T
 import qualified Data.Text.Lazy.IO          as TL
 import           Data.Version               (showVersion)
-import qualified Language.Javascript.JQuery as JQuery
 import           System.Environment         (getArgs, getProgName)
 import           System.Exit                (exitFailure)
 import           System.FilePath            (takeBaseName)
@@ -21,20 +20,15 @@ import qualified System.IO                  as IO
 
 
 --------------------------------------------------------------------------------
-import           Paths_profiteur            (getDataFileName, version)
+import           Paths_profiteur            (version)
 import           Profiteur.Core
 import           Profiteur.Parser
+import           Profiteur.DataFile
 
 
 --------------------------------------------------------------------------------
-includeFile :: IO.Handle -> FilePath -> IO ()
-includeFile h filePath =
-    BL.hPutStr h =<< BL.readFile filePath
-
-
---------------------------------------------------------------------------------
-writeReport :: String -> NodeMap -> IO ()
-writeReport profFile prof = IO.withBinaryFile htmlFile IO.WriteMode $ \h -> do
+writeReport :: IO.Handle -> String -> NodeMap -> IO ()
+writeReport h profFile prof = do
     BC8.hPutStrLn h $
         "<!DOCTYPE html>\n\
         \<html>\n\
@@ -47,40 +41,51 @@ writeReport profFile prof = IO.withBinaryFile htmlFile IO.WriteMode $ \h -> do
     BC8.hPutStrLn h ";</script>"
 
     BC8.hPutStrLn h "<style>"
-    includeFile h =<< getDataFileName "data/css/main.css"
+    includeFile h "data/css/main.css"
     BC8.hPutStrLn h "</style>"
 
-    includeJs h =<< JQuery.file
-    includeJs h =<< getDataFileName "data/js/unicode.js"
-    includeJs h =<< getDataFileName "data/js/model.js"
-    includeJs h =<< getDataFileName "data/js/resizing-canvas.js"
-    includeJs h =<< getDataFileName "data/js/node.js"
-    includeJs h =<< getDataFileName "data/js/selection.js"
-    includeJs h =<< getDataFileName "data/js/zoom.js"
-    includeJs h =<< getDataFileName "data/js/details.js"
-    includeJs h =<< getDataFileName "data/js/sorting.js"
-    includeJs h =<< getDataFileName "data/js/tree-map.js"
-    includeJs h =<< getDataFileName "data/js/tree-browser.js"
-    includeJs h =<< getDataFileName "data/js/main.js"
+    includeJs JQueryFile
+    includeJs "data/js/unicode.js"
+    includeJs "data/js/model.js"
+    includeJs "data/js/resizing-canvas.js"
+    includeJs "data/js/node.js"
+    includeJs "data/js/selection.js"
+    includeJs "data/js/zoom.js"
+    includeJs "data/js/details.js"
+    includeJs "data/js/sorting.js"
+    includeJs "data/js/tree-map.js"
+    includeJs "data/js/tree-browser.js"
+    includeJs "data/js/main.js"
 
     BC8.hPutStrLn h
         "  </head>\n\
         \  <body>"
-    includeFile h =<< getDataFileName "data/html/body.html"
+    includeFile h "data/html/body.html"
     BC8.hPutStrLn h
         "  </body>\
         \</html>"
-
-    putStrLn $ "Wrote " ++ htmlFile
   where
-    htmlFile = profFile ++ ".html"
     title    = T.pack $ takeBaseName profFile
 
-    includeJs h file = do
+    includeJs file = do
         BC8.hPutStrLn h "<script type=\"text/javascript\">"
         includeFile h file
         BC8.hPutStrLn h "</script>"
 
+--------------------------------------------------------------------------------
+makeReport :: IO.Handle -> FilePath -> IO ()
+makeReport h profFile = do
+    profOrErr <- decode <$> TL.readFile profFile
+    case profOrErr of
+        Right prof ->
+            writeReport h profFile $ nodeMapFromCostCentre prof
+        Left err   -> do
+            putStrLnErr $ profFile ++ ": " ++ err
+            exitFailure
+
+--------------------------------------------------------------------------------
+putStrLnErr :: String -> IO ()
+putStrLnErr = IO.hPutStrLn IO.stderr
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -89,15 +94,17 @@ main = do
     args     <- getArgs
     case args of
         _ | "--version" `elem` args ->
-            putStrLn (showVersion version)
-        [profFile] -> do
-            profOrErr <- decode <$> TL.readFile profFile
-            case profOrErr of
-                Right prof ->
-                    writeReport profFile $ nodeMapFromCostCentre prof
-                Left err   -> do
-                    putStrLn $ profFile ++ ": " ++ err
-                    exitFailure
+            putStrLnErr (showVersion version)
+        [profFile] ->
+            let htmlFile = profFile ++ ".html"
+            in IO.withBinaryFile htmlFile IO.WriteMode $ \h ->
+                  makeReport h profFile
+        [profFile, "-"] ->
+            makeReport IO.stdout profFile
+        [profFile, htmlFile] ->
+            IO.withBinaryFile htmlFile IO.WriteMode $ \h ->
+                makeReport h profFile
         _ -> do
-            putStrLn $ "Usage: " ++ progName ++ " <prof file>"
+            putStrLnErr $ "Usage: " ++ progName ++ " <prof file> [<output file>]"
+            putStrLnErr   "   <output file> \"-\" means STDOUT"
             exitFailure
