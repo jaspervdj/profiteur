@@ -44,7 +44,7 @@ writeReport h profFile prof = do
     includeFile h "data/css/main.css"
     BC8.hPutStrLn h "</style>"
 
-    includeJs JQuery
+    includeJs JQueryFile
     includeJs "data/js/unicode.js"
     includeJs "data/js/model.js"
     includeJs "data/js/resizing-canvas.js"

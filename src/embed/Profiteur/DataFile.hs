@@ -16,7 +16,7 @@ import Data.Maybe
 includeFile :: Handle -> DataType -> IO ()
 includeFile h filePath = B.hPutStr h $ data' filePath
   where
-    data' JQuery = $(embedFile =<< runIO JQuery.file)
+    data' JQueryFile = $(embedFile =<< runIO JQuery.file)
     data' (DataFile fp) =
       fromMaybe (error $ "No such datafile: " ++ fp) $ lookup fp dataDirContents
     dataDirContents = map (first ("data/" ++)) $(embedDir "data")

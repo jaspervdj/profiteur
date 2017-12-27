@@ -10,7 +10,7 @@ import qualified Language.Javascript.JQuery as JQuery
 import Profiteur.DataFile.Internal
 
 includeFile :: Handle -> DataType -> IO ()
-includeFile h JQuery =
+includeFile h JQueryFile =
     BL.hPutStr h =<< BL.readFile =<< JQuery.file
 includeFile h (DataFile filePath) =
     BL.hPutStr h =<< BL.readFile =<< getDataFileName filePath
