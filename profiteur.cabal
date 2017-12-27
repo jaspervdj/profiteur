@@ -48,8 +48,8 @@ Executable profiteur
   Other-modules:
     Profiteur.Core
     Profiteur.Parser
-    Profiteur.Data
-    Profiteur.DataType
+    Profiteur.DataFile
+    Profiteur.DataFile.Internal
 
   Build-depends:
     aeson                >= 0.6  && < 1.3,

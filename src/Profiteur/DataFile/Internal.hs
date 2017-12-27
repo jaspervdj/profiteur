@@ -1,4 +1,4 @@
-module Profiteur.DataType where
+module Profiteur.DataFile.Internal where
 
 import Data.String
 

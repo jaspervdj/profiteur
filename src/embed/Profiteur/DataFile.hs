@@ -1,7 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Profiteur.Data where
+module Profiteur.DataFile (
+  includeFile,
+  module Profiteur.DataFile.Internal
+  ) where
 
-import Profiteur.DataType
+import Profiteur.DataFile.Internal
 import System.IO (Handle)
 import qualified Data.ByteString       as B
 import Data.FileEmbed

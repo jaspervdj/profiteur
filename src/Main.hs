@@ -23,8 +23,7 @@ import qualified System.IO                  as IO
 import           Paths_profiteur            (version)
 import           Profiteur.Core
 import           Profiteur.Parser
-import           Profiteur.Data
-import           Profiteur.DataType
+import           Profiteur.DataFile
 
 
 --------------------------------------------------------------------------------
