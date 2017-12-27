@@ -31,9 +31,10 @@ Data-files:
   data/js/unicode.js
   data/js/zoom.js
 
-Flag embed_data
+Flag embed-data-files
   description: Embed data files into the executable (needed for ghcjs packaging)
   default:     False
+  manual:      True
 
 Source-repository head
   Type: git
@@ -63,7 +64,7 @@ Executable profiteur
     unordered-containers >= 0.2  && < 0.3,
     vector               >= 0.10 && < 0.13
 
-  if flag(embed_data)
+  if flag(embed-data-files)
     Build-depends: file-embed >= 0.0.10 && < 0.0.11,
                    template-haskell >= 2.11 && < 2.12
     Hs-source-dirs: src/embed
