@@ -1,3 +1,9 @@
+- 0.4.4.0
+    * Add a flag to embed the datafiles (by Nikolay Yakimov)
+    * Allow passing in an output path (by Nikolay Yakimov)
+    * Use HSL instead of RGB for random color generation (by David
+      Luposchainsky)
+
 - 0.4.3.0
     * Add `--version` flag
     * Bump `aeson` dependency to 1.2
