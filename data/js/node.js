@@ -86,8 +86,8 @@ Node.prototype.getColor = function() {
     }
 
     var h = hash % 360;
-    var s = "100%";
-    var l = "40%";
+    var s = "30%";
+    var l = "30%";
     return 'hsl(' + h + ', ' + s + ', ' + l + ')';
 };
 
