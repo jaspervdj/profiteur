@@ -1,3 +1,10 @@
+# CHANGELOG
+
+- 0.4.5.0 (2018-05-08)
+    * Tweak saturation and lightness for readability (by @nqac)
+    * Bump `aeson` dependency to 1.3
+    * Bump `js-jquery` dependency to 3.3
+
 - 0.4.4.0
     * Add a flag to embed the datafiles (by Nikolay Yakimov)
     * Allow passing in an output path (by Nikolay Yakimov)
