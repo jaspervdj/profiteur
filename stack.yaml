@@ -1,5 +1,1 @@
-resolver: nightly-2017-12-14
-extra-package-dbs: []
-extra-deps: []
-packages:
-  - '.'
+resolver: lts-11.8
