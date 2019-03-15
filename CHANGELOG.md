@@ -1,5 +1,9 @@
 # CHANGELOG
 
+- 0.4.5.1 (2019-03-15)
+    * Bump `aeson` dependency to 1.4
+    * Bump `containers` dependency to 0.6
+
 - 0.4.5.0 (2018-05-08)
     * Tweak saturation and lightness for readability (by @nqac)
     * Bump `aeson` dependency to 1.3
