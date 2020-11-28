@@ -15,6 +15,8 @@ Usage
     ./your-program +RTS -p -RTS
     profiteur your-program.prof
 
+Open the output, `your-program.prof.html`, in a web browser.
+
 See also [example/Makefile](example/Makefile).
 
 A tree browser and a tree map are available to browse the profile.
