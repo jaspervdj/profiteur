@@ -15,10 +15,10 @@ import qualified Data.Vector     as V
 import qualified GHC.Prof        as Prof
 import qualified GHC.Prof.Types  as Prof
 
+import           Data.Maybe (fromMaybe)
 
 --------------------------------------------------------------------------------
 import           Profiteur.Core
-
 
 --------------------------------------------------------------------------------
 decode :: TL.Text -> Either String CostCentre
@@ -59,6 +59,7 @@ profileToCostCentre prof = do
         return CostCentre
             { ccName            = Prof.costCentreName cc
             , ccModule          = Prof.costCentreModule cc
+            , ccSrc             = fromMaybe mempty $ Prof.costCentreSrc cc
             , ccId              = T.pack (show $ no)
             , ccEntries         = fromIntegral (Prof.costCentreEntries cc)
             , ccIndividualTime  = Scientific.toRealFloat (Prof.costCentreIndTime cc)

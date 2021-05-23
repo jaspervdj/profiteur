@@ -32,6 +32,7 @@ type Id = T.Text
 data CostCentre = CostCentre
     { ccName            :: !T.Text
     , ccModule          :: !T.Text
+    , ccSrc             :: !T.Text
     , ccId              :: !Id
     , ccEntries         :: !Int
     , ccIndividualTime  :: !Double
@@ -47,6 +48,7 @@ data Node = Node
     { nId       :: !Id
     , nName     :: !T.Text
     , nModule   :: !T.Text
+    , nSrc      :: !T.Text
     , nEntries  :: !Int
     , nTime     :: !Double
     , nAlloc    :: !Double
@@ -72,6 +74,7 @@ nodesFromCostCentre cc
                 { nId       = ccId cc
                 , nName     = ccName cc
                 , nModule   = ccModule cc
+                , nSrc      = ccSrc cc
                 , nEntries  = ccEntries cc
                 , nTime     = ccInheritedTime cc
                 , nAlloc    = ccInheritedAlloc cc
@@ -87,6 +90,7 @@ nodesFromCostCentre cc
             { nId       = ccId cc <> ".indiv"
             , nName     = ccName cc <> " (indiv)"
             , nModule   = ccModule cc
+            , nSrc      = ccSrc cc
             , nEntries  = ccEntries cc
             , nTime     = ccIndividualTime cc
             , nAlloc    = ccIndividualAlloc cc
@@ -99,6 +103,7 @@ instance A.ToJSON Node where
     toJSON Node {..} = A.toJSON
         [ A.toJSON nName
         , A.toJSON nModule
+        , A.toJSON nSrc
         , A.toJSON nEntries
         , A.toJSON nTime
         , A.toJSON nAlloc
