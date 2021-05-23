@@ -57,6 +57,10 @@ Details.prototype.mkElement = function() {
             .append(mk('td').text('Alloc'))
             .append(mk('td').addClass('alloc')));
 
+    table.append(mk('tr')
+            .append(mk('td').text('Src'))
+            .append(mk('td').append(mk('code').addClass('src'))));
+
     table.append(mk('tr').addClass('mainTimeRow')
             .append(mk('td').text('MAIN Time'))
             .append(mk('td').addClass('mainTime')));
@@ -125,6 +129,7 @@ Details.prototype.render = function(node) {
     this.container.find('.entries').text(node.getEntries());
     this.container.find('.time').text(formatNum(time));
     this.container.find('.alloc').text(formatNum(alloc));
+    this.container.find('.src').text(node.getSourceLoc().replace(/(^<|>$)/g, ""));
     this.container.find('.mainTime').text(formatNum(mainTime));
     this.container.find('.mainAlloc').text(formatNum(mainAlloc));
 

@@ -17,10 +17,11 @@ function Node(prof, selection, sorting, parent, id) {
     var data = prof[id];
     _this.name     = data[0];
     _this.module   = data[1];
-    _this.entries  = data[2];
-    _this.time     = data[3];
-    _this.alloc    = data[4];
-    _this.childIds = data[5];
+    _this.src      = data[2];
+    _this.entries  = data[3];
+    _this.time     = data[4];
+    _this.alloc    = data[5];
+    _this.childIds = data[6];
     _this.children = [];
 
     if (sorting) sorting.addChangeListener(_this);
@@ -72,6 +73,10 @@ Node.prototype.getModuleName = function() {
 
 Node.prototype.getFullName = function() {
     return this.module + '.' + this.name;
+};
+
+Node.prototype.getSourceLoc = function() {
+    return this.src;
 };
 
 Node.prototype.getEntries = function() {
