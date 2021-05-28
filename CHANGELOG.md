@@ -1,5 +1,10 @@
 # CHANGELOG
 
+- 0.4.6.0 (2020-05-28)
+    * Add source code locations to cost-centre details (by Rodney Lorrimar)
+    * Bump `aeson` dependency to 1.5
+    * Bump `file-embed` to 0.0.11
+
 - 0.4.5.1 (2019-03-15)
     * Bump `aeson` dependency to 1.4
     * Bump `containers` dependency to 0.6
