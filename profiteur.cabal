@@ -10,7 +10,7 @@ Maintainer:          Jasper Van der Jeugt <m@jaspervdj.be>
 Copyright:           2014 Jasper Van der Jeugt
 Category:            Development, Profiling
 Build-type:          Simple
-Cabal-version:       >= 1.8
+Cabal-version:       >= 1.10
 
 Extra-source-files:
   CHANGELOG.md
@@ -41,9 +41,10 @@ Source-repository head
   Location: git://github.com/jaspervdj/profiteur.git
 
 Executable profiteur
-  Main-is:        Main.hs
-  Hs-source-dirs: src
-  Ghc-options:    -Wall
+  Default-language: Haskell2010
+  Ghc-options:      -Wall
+  Hs-source-dirs:   src
+  Main-is:          Main.hs
 
   Other-modules:
     Profiteur.Core
