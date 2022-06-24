@@ -19,7 +19,6 @@ import qualified Data.Aeson          as A
 import qualified Data.HashMap.Strict as HMS
 import           Data.List           (foldl')
 import           Data.Maybe          (mapMaybe, maybeToList)
-import           Data.Monoid         ((<>))
 import qualified Data.Text           as T
 import qualified Data.Vector         as V
 
