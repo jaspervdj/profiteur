@@ -1,5 +1,9 @@
 # CHANGELOG
 
+- 0.4.6.1 (2022-06-28)
+    * Bump `aeson` dependency upper bound to 2.2
+    * Bump `bytestring` dependency upper bound to 0.12
+
 - 0.4.6.0 (2020-05-28)
     * Add source code locations to cost-centre details (by Rodney Lorrimar)
     * Bump `aeson` dependency to 1.5
