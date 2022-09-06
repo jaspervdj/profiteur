@@ -7,7 +7,11 @@ Installation
 ------------
 
     cabal install profiteur
+    
+Installation via nix
 
+    nix-shell -p haskellPackages.profiteur
+    
 Usage
 -----
 
