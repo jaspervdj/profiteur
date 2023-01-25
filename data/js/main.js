@@ -13,6 +13,16 @@ function main() {
     var tm = new TreeMap(rc, selection, sorting, zoom);
     var details = new Details($('#details'), selection, sorting, zoom);
     selection.setSelectedNode(root);
+
+    let currentNode = root;
+    currentNode.select();
+    currentNode.setExpanded(true);
+    while(currentNode.children.length == 1) {
+        currentNode = currentNode.children[0];
+        currentNode.select();
+        currentNode.setExpanded(true);
+    }
+    tb.scrollToNode(currentNode, true);
 }
 
 $(document).ready(function () {
