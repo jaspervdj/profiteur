@@ -208,6 +208,25 @@ TreeMap.prototype.render = function() {
     }, 50);
 };
 
+function getLines(ctx, text, maxWidth) {
+    var words = text.split("");
+    var lines = [];
+    var currentLine = words[0];
+
+    for (var i = 1; i < words.length; i++) {
+      var word = words[i];
+      var width = ctx.measureText(currentLine + "" + word).width;
+      if (width < maxWidth) {
+        currentLine += "" + word;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
+}
+
 TreeMap.prototype.renderNode = function(node) {
     var _this   = this;
     var context = this.canvas.getContext('2d');
@@ -221,6 +240,14 @@ TreeMap.prototype.renderNode = function(node) {
     context.fillRect(rect.x, rect.y, rect.w, rect.h);
     context.strokeStyle = 'black';
     context.strokeRect(rect.x, rect.y, rect.w, rect.h);
+
+    context.textBaseline = "top";
+    context.fillStyle = 'black';
+    const textPadding = 3;
+    const lines = getLines(context, node.name, rect.w-2*textPadding);
+    for(var i = 0; i < lines.length; i++) {
+       context.fillText(lines[i], rect.x+textPadding, rect.y+textPadding+10*i);
+    }
 
     // Draw children on top.
     if (node.children.length > 0) {
