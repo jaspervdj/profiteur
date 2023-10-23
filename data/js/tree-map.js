@@ -208,16 +208,17 @@ TreeMap.prototype.render = function() {
     }, 50);
 };
 
-function getLines(ctx, text, maxWidth) {
-    var words = text.split("");
+// Divide the label for a node into lines by wrapping.
+function wrapTextToWidth(ctx, text, maxWidth) {
+    var words = text.split('');
     var lines = [];
     var currentLine = words[0];
 
     for (var i = 1; i < words.length; i++) {
       var word = words[i];
-      var width = ctx.measureText(currentLine + "" + word).width;
+      var width = ctx.measureText(currentLine + '' + word).width;
       if (width < maxWidth) {
-        currentLine += "" + word;
+        currentLine += '' + word;
       } else {
         lines.push(currentLine);
         currentLine = word;
@@ -241,10 +242,15 @@ TreeMap.prototype.renderNode = function(node) {
     context.strokeStyle = 'black';
     context.strokeRect(rect.x, rect.y, rect.w, rect.h);
 
-    context.textBaseline = "top";
-    context.fillStyle = 'black';
+    context.font = '14px sans-serif';
+    context.textBaseline = 'top';
+    if (node == _this.selection.getSelectedNode()) {
+        context.fillStyle = '#ffffff';
+    } else {
+        context.fillStyle = '#000000';
+    }
     const textPadding = 3;
-    const lines = getLines(context, node.name, rect.w-2*textPadding);
+    const lines = wrapTextToWidth(context, node.name, rect.w-2*textPadding);
     for(var i = 0; i < lines.length; i++) {
        context.fillText(lines[i], rect.x+textPadding, rect.y+textPadding+10*i);
     }
