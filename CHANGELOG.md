@@ -1,5 +1,11 @@
 # CHANGELOG
 
+- 0.4.7.0 (2022-10-23)
+    * Draw labels in the treemap (by Andrei Barbu)
+    * On initialization, expand nodes until the first branch (by Andrei Barbu)
+    * Expose `Profiteur.Core` and `Profiteur.Parser` as a library (by
+      Alfredo Di Napoli)
+
 - 0.4.6.1 (2022-06-28)
     * Bump `aeson` dependency upper bound to 2.2
     * Bump `bytestring` dependency upper bound to 0.12
