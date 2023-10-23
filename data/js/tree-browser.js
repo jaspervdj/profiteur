@@ -63,7 +63,7 @@ TreeBrowser.prototype.renderNode = function(element, node) {
     }
 };
 
-TreeBrowser.prototype.scrollToNode = function(node) {
+TreeBrowser.prototype.scrollToNode = function(node, force) {
     var element  = this.elements[node.id];
     var position = element.position();
     var top      = this.container.scrollTop();
@@ -71,7 +71,7 @@ TreeBrowser.prototype.scrollToNode = function(node) {
     var height   = this.container.height();
     var width    = this.container.width();
 
-    if (position.top < 0 || position.top >= height ||
+    if (force || position.top < 0 || position.top >= height ||
             position.left < 0 || position.left >= width) {
         this.container.scrollTop(top + position.top - height / 2);
         this.container.scrollLeft(left + position.left);
