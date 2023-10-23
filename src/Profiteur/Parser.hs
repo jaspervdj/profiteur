@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Profiteur.Parser
     ( decode
+    , profileToCostCentre
     ) where
 
 
