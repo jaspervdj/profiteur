@@ -43,9 +43,10 @@ Source-repository head
 Library
   Default-language: Haskell2010
   Ghc-options:      -Wall
-  Hs-source-dirs:   src
+  Hs-source-dirs:   lib
   Exposed-Modules:
     Profiteur.Core
+    Profiteur.Main
     Profiteur.Parser
   Other-modules:
     Profiteur.DataFile
@@ -56,50 +57,24 @@ Library
     base                 >= 4.8  && < 5,
     bytestring           >= 0.9  && < 0.12,
     containers           >= 0.5  && < 0.7,
+    filepath             >= 1.4  && < 1.5,
     ghc-prof             >= 1.3  && < 1.5,
     js-jquery            >= 3.1  && < 3.4,
     scientific           >= 0.3  && < 0.4,
     text                 >= 0.11 && < 2.1,
     unordered-containers >= 0.2  && < 0.3,
-    vector               >= 0.10 && < 0.13
+    vector               >= 0.10 && < 0.14
   if flag(embed-data-files)
-    Hs-source-dirs: src/embed
+    Hs-source-dirs: lib/embed
     Build-depends:
       file-embed       >= 0.0.10 && < 0.0.12,
       template-haskell
   else
-    Hs-source-dirs: src/noembed
+    Hs-source-dirs: lib/noembed
 
 Executable profiteur
   Default-language: Haskell2010
   Ghc-options:      -Wall
   Hs-source-dirs:   src
   Main-is:          Main.hs
-
-  Other-modules:
-    Profiteur.Core
-    Profiteur.Parser
-    Profiteur.DataFile
-    Profiteur.DataFile.Internal
-    Paths_profiteur
-
-  Build-depends:
-    aeson                >= 0.6  && < 2.2,
-    base                 >= 4.8  && < 5,
-    bytestring           >= 0.9  && < 0.12,
-    containers           >= 0.5  && < 0.7,
-    filepath             >= 1.3  && < 1.5,
-    ghc-prof             >= 1.3  && < 1.5,
-    js-jquery            >= 3.1  && < 3.4,
-    scientific           >= 0.3  && < 0.4,
-    text                 >= 0.11 && < 2.1,
-    unordered-containers >= 0.2  && < 0.3,
-    vector               >= 0.10 && < 0.13
-
-  if flag(embed-data-files)
-    Hs-source-dirs: src/embed
-    Build-depends:
-      file-embed       >= 0.0.10 && < 0.0.12,
-      template-haskell
-  else
-    Hs-source-dirs: src/noembed
+  Build-depends:    base, profiteur

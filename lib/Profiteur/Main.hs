@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-module Main
+module Profiteur.Main
     ( main
     ) where
 
