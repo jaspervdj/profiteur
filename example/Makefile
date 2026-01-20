@@ -1,4 +1,4 @@
-GHC=stack exec ghc --
+GHC=ghc
 
 binary-trees.prof.html: binary-trees.prof
 	profiteur binary-trees.prof

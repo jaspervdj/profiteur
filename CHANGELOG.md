@@ -1,5 +1,13 @@
 # CHANGELOG
 
+- Unreleased
+    * Bump `aeson` dependency upper bound to 2.3
+    * Bump `bytestring` dependency upper bound to 0.13
+    * Bump `js-jquery` dependency upper bound to 3.8
+    * Bump `text` dependency upper bound to 2.2
+    * Add `flake.nix`
+    * Add missing `src/Main.hs`
+
 - 0.4.7.0 (2022-10-23)
     * Draw labels in the treemap (by Andrei Barbu)
     * On initialization, expand nodes until the first branch (by Andrei Barbu)
