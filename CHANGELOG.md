@@ -1,6 +1,6 @@
 # CHANGELOG
 
-- Unreleased
+- 0.4.7.1 (2022-01-20)
     * Bump `aeson` dependency upper bound to 2.3
     * Bump `bytestring` dependency upper bound to 0.13
     * Bump `js-jquery` dependency upper bound to 3.8

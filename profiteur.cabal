@@ -1,7 +1,6 @@
 Name:                profiteur
-Version:             0.4.7.0
+Version:             0.4.7.1
 Synopsis:            Treemap visualiser for GHC prof files
-Description:         Treemap visualiser for GHC prof files
 Homepage:            http://github.com/jaspervdj/profiteur
 License:             BSD3
 License-file:        LICENSE
@@ -11,6 +10,11 @@ Copyright:           2014 Jasper Van der Jeugt
 Category:            Development, Profiling
 Build-type:          Simple
 Cabal-version:       >= 1.10
+
+Description:
+  profiteur consumes a GHC profile, which is the result of running your
+  executable with profiling enabled.  It turns this into an HTML file containing
+  an interactive Treemap-based visualisation.
 
 Extra-source-files:
   CHANGELOG.md
@@ -37,8 +41,8 @@ Flag embed-data-files
   manual:      True
 
 Source-repository head
-  Type: git
-  Location: git://github.com/jaspervdj/profiteur.git
+  Type: https
+  Location: https://github.com/jaspervdj/profiteur.git
 
 Library
   Default-language: Haskell2010
